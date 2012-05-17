@@ -255,19 +255,25 @@ class RepoList(BaseView):
     """ Shows a list of all repos and can be sorted by last update. """
     def view(self):
         self['repos'] = repos = []
-        for name in app.repos.iterkeys():
-            repo = get_repo(name)
-            refs = [repo[ref_hash] for ref_hash in repo.get_refs().itervalues()]
-            refs.sort(key=lambda obj:getattr(obj, 'commit_time', None),
-                      reverse=True)
-            last_updated_at = None
-            if refs:
-                last_updated_at = refs[0].commit_time
-            repos.append((name, last_updated_at))
-        if 'by-last-update' in self.GET:
-            repos.sort(key=lambda x: x[1], reverse=True)
+        if len(app.repos) == 1:
+            reponame = app.repos.iterkeys().next();
+            raise Response(302, 
+                    [('Location', app.build_url('history', repo=reponame, commit_id='master', path=''))], 
+                    '')
         else:
-            repos.sort(key=lambda x: x[0])
+            for name in app.repos.iterkeys():
+                repo = get_repo(name)
+                refs = [repo[ref_hash] for ref_hash in repo.get_refs().itervalues()]
+                refs.sort(key=lambda obj:getattr(obj, 'commit_time', None),
+                          reverse=True)
+                last_updated_at = None
+                if refs:
+                    last_updated_at = refs[0].commit_time
+                repos.append((name, last_updated_at))
+            if 'by-last-update' in self.GET:
+                repos.sort(key=lambda x: x[1], reverse=True)
+            else:
+                repos.sort(key=lambda x: x[0])
 
 class BaseRepoView(BaseView):
     def __init__(self, env, repo, commit_id, path=None):
