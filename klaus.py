@@ -16,6 +16,7 @@ from pygments import highlight
 from pygments.lexers import get_lexer_for_filename, get_lexer_by_name, \
                             guess_lexer, ClassNotFound
 from pygments.formatters import HtmlFormatter
+from docutils.core import publish_string
 
 from nano import NanoApplication, HttpError
 from repo import Repo
@@ -84,6 +85,9 @@ app.repos = dict(
     (repo.rstrip(os.sep).split(os.sep)[-1].replace('.git', ''), repo)
     for repo in (sys.argv[1:] or os.environ.get('KLAUS_REPOS', '').split())
 )
+
+def restructure(text):
+    return publish_string(text, writer_name='html');
 
 def pygmentize(code, filename=None, language=None):
     if language:
@@ -208,6 +212,7 @@ app.jinja_env.filters['timesince'] = timesince
 app.jinja_env.filters['shorten_sha1'] = shorten_sha1
 app.jinja_env.filters['shorten_message'] = lambda msg: msg.split('\n')[0]
 app.jinja_env.filters['pygmentize'] = pygmentize
+app.jinja_env.filters['restructure'] = restructure
 app.jinja_env.filters['is_binary'] = guess_is_binary
 app.jinja_env.filters['is_image'] = guess_is_image
 app.jinja_env.filters['shorten_author'] = extract_author_name
