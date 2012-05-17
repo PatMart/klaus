@@ -23,17 +23,17 @@
       <div class=too-large-warning>(Large file not shown)</div>
     {% else %}
       {% autoescape off %}
-        {{ blob.data|u|pygmentize(filename=filename) }}
+        {{ blob.data|u|restructure }}
       {% endautoescape %}
     {% endif %}
   {% endif %}
 </div>
 
-<script>
+<!--script>
   highlight_linenos({
     linksSelector: '.highlighttable .linenos a',
     getLineFromAnchor: function(anchor) { return anchor.nextSibling }
   })
-</script>
+</script-->
 
 {% endblock %}

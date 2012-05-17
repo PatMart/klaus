@@ -38,7 +38,7 @@
           {% endif %}
         {% endfor %}
       {% else %}
-        Commit History
+        GikiLog
       {% endif %}
       <span>
         @<a href="{{ build_url(commit_id=branch) }}">{{ branch }}</a>
@@ -53,7 +53,9 @@
       <li>
         <a class=commit href="{{ build_url('view_commit', commit_id=commit.id) }}">
           <span class=line1>
-            <span>{{ commit.message|u|shorten_message }}</span>
+            {% autoescape off %}
+              <span>{{ commit.message|u|restructure }}</span>
+            {% endautoescape %}
           </span>
           <span class=line2>
             <span>{{ commit.author|u|shorten_author }}</span>
