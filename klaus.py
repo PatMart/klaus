@@ -20,6 +20,12 @@ from pygments.formatters import HtmlFormatter
 from nano import NanoApplication, HttpError
 from repo import Repo
 
+# prevent reverse dns lookups, see http://mail.python.org/pipermail/web-sig/2008-July/003523.html
+def getfqdn(name=''):
+    return name
+import socket
+socket.getfqdn=getfqdn
+
 
 KLAUS_ROOT = os.path.join(os.path.dirname(__file__))
 TEMPLATE_DIR = os.path.join(KLAUS_ROOT, 'templates')
