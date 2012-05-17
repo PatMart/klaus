@@ -17,6 +17,7 @@ from pygments.lexers import get_lexer_for_filename, get_lexer_by_name, \
                             guess_lexer, ClassNotFound
 from pygments.formatters import HtmlFormatter
 from docutils.core import publish_string
+from mwparser import WikiMarkup
 
 from nano import NanoApplication, HttpError
 from repo import Repo
@@ -85,6 +86,25 @@ app.repos = dict(
     (repo.rstrip(os.sep).split(os.sep)[-1].replace('.git', ''), repo)
     for repo in (sys.argv[1:] or os.environ.get('KLAUS_REPOS', '').split())
 )
+
+# format this text, if a filename is given use the extension to decide on
+# the formatter to use
+def formatblob(text, filename=None, language=None):
+    #if markdown and any(filter(lambda ext: filename.endswith(ext), ['.md', '.mkdown', '.txt'])):
+    #    return markdown(text)
+    if (filename is None):
+        return pygmentize(code, filename, language);
+
+    if any(filter(lambda ext: filename.endswith(ext), ['.rs', '.txt'])):
+        return restructure(text)
+    
+    if filename.endswith('.mw'):
+        wm = WikiMarkup(text)
+        wm.set_link_postfix('.mw')
+        return wm.render()
+    
+    return pygmentize(code, filename, language);
+
 
 def restructure(text):
     return publish_string(text, writer_name='html');
@@ -212,6 +232,7 @@ app.jinja_env.filters['timesince'] = timesince
 app.jinja_env.filters['shorten_sha1'] = shorten_sha1
 app.jinja_env.filters['shorten_message'] = lambda msg: msg.split('\n')[0]
 app.jinja_env.filters['pygmentize'] = pygmentize
+app.jinja_env.filters['formatblob'] = formatblob
 app.jinja_env.filters['restructure'] = restructure
 app.jinja_env.filters['is_binary'] = guess_is_binary
 app.jinja_env.filters['is_image'] = guess_is_image

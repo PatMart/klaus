@@ -23,7 +23,7 @@
       <div class=too-large-warning>(Large file not shown)</div>
     {% else %}
       {% autoescape off %}
-        {{ blob.data|u|restructure }}
+        {{ blob.data|u|formatblob(filename=filename) }}
       {% endautoescape %}
     {% endif %}
   {% endif %}
