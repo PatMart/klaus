@@ -137,8 +137,8 @@ class RepoWrapper(dulwich.repo.Repo):
                 if directory:
                     if directory in tree:
                         tree = self[tree[directory][1]]
-                    else
-                        return Nil
+                    else:
+                        return None
         return tree
 
     def commit_diff(self, commit):

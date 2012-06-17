@@ -362,6 +362,11 @@ class TreeViewMixin(object):
         """
         dirs, files = [], []
         tree, root = self.get_tree()
+        if tree == None:
+            #raise Response(302, 
+            #        [('Location', app.build_url('history', repo=self['repo'].name, commit_id='master', path=self['path']))], 
+            #        '')
+            return None
         for entry in tree.iteritems():
             name, entry = entry.path, entry.in_path(root)
             if entry.mode & stat.S_IFDIR:
@@ -421,6 +426,10 @@ class BlobView(BaseBlobView, TreeViewMixin):
         BaseBlobView.view(self)
         TreeViewMixin.view(self)
         self['raw_url'] = self.build_url('raw_blob', path=self['path'])
+        if self['blob'] == None:
+            raise Response(302, 
+                    [('Location', app.build_url('history', repo=self['repo'].name, commit_id='master', path=self['path']))], 
+                    '')
         self['too_large'] = sum(map(len, self['blob'].chunked)) > 100*1024
 
 
