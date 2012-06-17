@@ -363,9 +363,6 @@ class TreeViewMixin(object):
         dirs, files = [], []
         tree, root = self.get_tree()
         if tree == None:
-            #raise Response(302, 
-            #        [('Location', app.build_url('history', repo=self['repo'].name, commit_id='master', path=self['path']))], 
-            #        '')
             return None
         for entry in tree.iteritems():
             name, entry = entry.path, entry.in_path(root)
@@ -416,7 +413,11 @@ class TreeView(TreeViewMixin, BaseRepoView):
 
 class BaseBlobView(BaseRepoView):
     def view(self):
-        self['blob'] = self['repo'].get_tree(self['commit'], self['path'])
+        treeobject = self['repo'].get_tree(self['commit'], self['path'])
+        if treeobject is Blob or treeobject is Commit or 1:
+            self['blob'] = treeobject
+        else:
+            self['blob'] = treeobject
         self['directory'], self['filename'] = os.path.split(self['path'].strip('/'))
 
 @route('/:repo:/blob/:commit_id:/(?P<path>.*)', 'view_blob')

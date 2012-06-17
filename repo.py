@@ -131,6 +131,8 @@ class RepoWrapper(dulwich.repo.Repo):
 
     def get_tree(self, commit, path, noblobs=False):
         """ Returns the Git tree object for `path` at `commit`. """
+        """ If the object is no longer found on this branch, return the """
+        """ part of the tree leading up to this file """
         tree = self[commit.tree]
         if path:
             for directory in path.strip('/').split('/'):
@@ -138,7 +140,7 @@ class RepoWrapper(dulwich.repo.Repo):
                     if directory in tree:
                         tree = self[tree[directory][1]]
                     else:
-                        return None
+                        return tree
         return tree
 
     def commit_diff(self, commit):
