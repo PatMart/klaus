@@ -1,0 +1,15 @@
+header {
+  background: black;
+}
+
+header a {
+  color: white !important;
+}
+
+.branch-selector {
+  display: none;
+}
+
+span.branch.master, span.commitid.master {
+  display: none;
+}
