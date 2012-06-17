@@ -52,7 +52,7 @@
     {% for commit in history %}
     {% if not loop.last or history|length < history_length %}
       <li>
-        <a class=commit href="{{ build_url('view_commit', commit_id=commit.id) }}">
+        <a class="{{ commit|commitclasses }}" href="{{ build_url('view_commit', commit_id=commit.id) }}">
           <h3>{{ commit.message|title }}</h3>
           <span class="line2 subtitle">
             <span>{{ commit.author|u|shorten_author }}</span>
