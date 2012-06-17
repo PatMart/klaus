@@ -52,19 +52,19 @@
     {% for commit in history %}
     {% if not loop.last or history|length < history_length %}
       <li>
-        <a class="{{ commit|commitclasses }}" href="{{ build_url('view_commit', commit_id=commit.id) }}">
+        <div class="{{ commit|commitclasses }}" onclick="document.location='{{ build_url('view_commit', commit_id=commit.id) }}'">
           <h3>{{ commit.message|title }}</h3>
           <span class="line2 subtitle">
             <span>{{ commit.author|u|shorten_author }}</span>
             <span>{{ commit.commit_time|timesince }} ago</span>
           </span>
-          <span class=line1>
+          <div class=line1>
             {% autoescape off %}
-              <span>{{ commit.message|body|u|restructure }}</span>
+              <div>{{ commit.message|body|u|restructure }}</div>
             {% endautoescape %}
-          </span>
+          </div>
           <span class=clearfloat></span>
-        </a>
+        </div>
       </li>
       {% endif %}
     {% endfor %}

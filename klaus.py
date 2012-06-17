@@ -16,7 +16,7 @@ from pygments import highlight
 from pygments.lexers import get_lexer_for_filename, get_lexer_by_name, \
                             guess_lexer, ClassNotFound
 from pygments.formatters import HtmlFormatter
-from docutils.core import publish_string
+from docutils.core import publish_parts
 from mwparser import WikiMarkup
 
 from nano import NanoApplication, HttpError
@@ -107,7 +107,7 @@ def formatblob(text, filename=None, language=None):
 
 
 def restructure(text):
-    return publish_string(text, writer_name='html');
+    return publish_parts(text, writer_name='html')['html_body'];
 
 def pygmentize(code, filename=None, language=None):
     if language:
