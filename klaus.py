@@ -227,6 +227,12 @@ def shorten_sha1(sha1):
         sha1 = sha1[:10]
     return sha1
 
+def extract_title_from_commitmessage(commitmessage):
+  return commitmessage[:commitmessage.find("\n")]
+
+def extract_body_from_commitmessage(commitmessage):
+  return commitmessage[commitmessage.find("\n"):]
+
 app.jinja_env.filters['u'] = force_unicode
 app.jinja_env.filters['timesince'] = timesince
 app.jinja_env.filters['shorten_sha1'] = shorten_sha1
@@ -237,6 +243,8 @@ app.jinja_env.filters['restructure'] = restructure
 app.jinja_env.filters['is_binary'] = guess_is_binary
 app.jinja_env.filters['is_image'] = guess_is_image
 app.jinja_env.filters['shorten_author'] = extract_author_name
+app.jinja_env.filters['title'] = extract_title_from_commitmessage
+app.jinja_env.filters['body'] = extract_body_from_commitmessage
 
 def subpaths(path):
     """

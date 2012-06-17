@@ -13,3 +13,12 @@ header a {
 span.branch.master, span.commitid.master {
   display: none;
 }
+
+h3 {
+  margin: 4px;
+}
+
+.subtitle {
+  display: block;
+  padding-bottom: 15px;
+}
