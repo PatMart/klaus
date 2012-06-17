@@ -8,9 +8,12 @@
 <div class=full-commit>
 
   <div class=commit>
-    <span class=line1>
-      <span>{{ commit.message|u }}</span>
-    </span>
+    <h2>{{ commit.message|title }}</h2>
+    <div class=line1>
+      {% autoescape off %}
+        <div>{{ commit.message|body|u|restructure }}</div>
+      {% endautoescape %}
+    </div>
     <span class=line2>
       <span>{{ commit.author|u|shorten_author }}</span>
       <span>{{ commit.commit_time|timesince }} ago</span>
