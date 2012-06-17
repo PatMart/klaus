@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+
 {% block content %}
 
 {% include 'tree.inc.html' %}
@@ -38,7 +39,7 @@
           {% endif %}
         {% endfor %}
       {% else %}
-        GikiLog
+        <!-- GikiLog -->
       {% endif %}
       <span class="branch {{ branch }}">
         @<a href="{{ build_url(commit_id=branch) }}">{{ branch }}</a>

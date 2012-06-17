@@ -10,6 +10,20 @@ header a {
   display: none;
 }
 
+#welcome {
+  border: 1px solid #E0E0E0;
+  background-color: #F9F9F9;
+  display: block;
+  margin: 10px;
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-bottom: 20px;
+}
+
+.signature {
+  float: right;
+}
+
 span.branch.master, span.commitid.master {
   display: none;
 }
@@ -21,4 +35,10 @@ h3 {
 .subtitle {
   display: block;
   padding-bottom: 15px;
+}
+
+#hybridexplanation li {
+  margin-left: 2em;
+  padding: 3px;
+  text-indent: -2em;
 }
