@@ -426,11 +426,12 @@ class BlobView(BaseBlobView, TreeViewMixin):
     def view(self):
         BaseBlobView.view(self)
         TreeViewMixin.view(self)
-        self['raw_url'] = self.build_url('raw_blob', path=self['path'])
-        if self['blob'] == None:
+        if self['blob'] == None or not hasattr(self['blob'], 'chunked'):
             raise Response(302, 
                     [('Location', app.build_url('history', repo=self['repo'].name, commit_id='master', path=self['path']))], 
                     '')
+
+        self['raw_url'] = self.build_url('raw_blob', path=self['path'])
         self['too_large'] = sum(map(len, self['blob'].chunked)) > 100*1024
 
 

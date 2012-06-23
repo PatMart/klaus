@@ -63,6 +63,19 @@
               <div>{{ commit.message|body|u|restructure }}</div>
             {% endautoescape %}
           </div>
+          <div class=tags>
+            {% for change in repo.changes(commit) %}
+              <div class=tagline>
+                {% if change.old.path != None %}
+                  {% set tagpath = '' %}
+                  {% for segment in change.old.path.split('/') %}
+                    {% set tagpath = tagpath + '/' + segment %}
+                    / <a href="{{ build_url('view_blob', path=tagpath) }}">{{ segment }}</a>
+                  {% endfor %}
+                {% endif %} 
+              </div>
+            {% endfor %}
+          </div>
           <span class=clearfloat></span>
         </div>
       </li>

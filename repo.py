@@ -57,6 +57,12 @@ class RepoWrapper(dulwich.repo.Repo):
         tags.sort()
         return tags
 
+    def changes(self, commit):
+        if len(commit.parents) > 0:
+          return dulwich.diff_tree.tree_changes(self, commit.tree, self[commit.parents[0]].tree)
+        else:
+          return []
+
     def history(self, commit, path=None, max_commits=None, skip=0):
         """
         Returns a list of all commits that infected `path`, starting at branch
