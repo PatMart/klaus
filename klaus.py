@@ -239,6 +239,12 @@ def get_classes_for_commit(commit):
     result += " nostory";
   return result;
 
+def remove_extension(filename):
+  if filename.find(".") == -1:
+    return filename
+  else:
+    return filename[:filename.find(".")]
+
 app.jinja_env.filters['u'] = force_unicode
 app.jinja_env.filters['timesince'] = timesince
 app.jinja_env.filters['shorten_sha1'] = shorten_sha1
@@ -252,6 +258,7 @@ app.jinja_env.filters['shorten_author'] = extract_author_name
 app.jinja_env.filters['title'] = extract_title_from_commitmessage
 app.jinja_env.filters['body'] = extract_body_from_commitmessage
 app.jinja_env.filters['commitclasses'] = get_classes_for_commit
+app.jinja_env.filters['noext'] = remove_extension
 
 def subpaths(path):
     """

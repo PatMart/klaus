@@ -70,7 +70,7 @@
                   {% set tagpath = '' %}
                   {% for segment in change.old.path.split('/') %}
                     {% set tagpath = tagpath + '/' + segment %}
-                    / <a href="{{ build_url('view_blob', path=tagpath) }}">{{ segment }}</a>
+                    / <a href="{{ build_url('view_blob', path=tagpath) }}">{{ segment|noext }}</a>
                   {% endfor %}
                 {% endif %} 
               </div>
