@@ -103,7 +103,7 @@ def formatblob(text, filename=None, language=None):
         wm.set_link_postfix('.mw')
         return wm.render()
     
-    return pygmentize(code, filename, language);
+    return pygmentize(text, filename, language);
 
 
 def restructure(text):
