@@ -31,3 +31,9 @@
   </ul>
 </div>
 {% endblock %}
+
+{% block header %}
+  {% autoescape off %}
+    {{ header|u }}
+  {% endautoescape %}
+{% endblock %}

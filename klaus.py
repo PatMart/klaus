@@ -331,6 +331,11 @@ class BaseRepoView(BaseView):
         self['branch'] = commit_id if isbranch else 'master'
         self['branches'] = repo.get_branch_names(exclude=[commit_id])
         self['path'] = path
+        readme = self['repo'].get_tree(self['commit'], "/README.html")
+        if hasattr(readme, 'data'):
+            self['header'] = readme.data
+        else:
+            self['header'] = ""
         if path:
             self['subpaths'] = list(subpaths(path))
         self['build_url'] = self.build_url

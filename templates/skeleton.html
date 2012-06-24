@@ -19,17 +19,7 @@
 </header>
 
 <div id="welcome">
-  <h1>GikiLog: A Geeky Blog/Wiki Hybrid</h1>
-    Welcome to my personal corner of the web. 
-    This site is a <a href="#" onclick="document.getElementById('hybridexplanation').style.display = 'inline';">blog/wiki hybrid</a>.
-    <div id="hybridexplanation" style="display: none">
-    <ul>
-      <li><b>If you're a blogger</b>, the tree on the left is a tag hierarchy, and each tag has a summarizing page attached to it (which I update with each blogpost for that tag)</li>
-      <li><b>If you're a wiki fan</b>, the tree on the left is the wiki page hierarchy, and the story on the right is the 'recent changes' (and I write big ones)</li>
-      <li><b>If you're a gitter</b>, commit messages are blog posts, and the files they update are the wiki pages</li>
-    </ul>
-    </div>
-  <div class=signature>-- Arnout Engelen</div>
+  {% block header %} {% endblock %}
 </div>
 
 <div id=content>
