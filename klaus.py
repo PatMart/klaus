@@ -101,7 +101,8 @@ def formatblob(text, filename=None, language=None):
     if filename.endswith('.mw'):
         wm = WikiMarkup(text)
         wm.set_link_postfix('.mw')
-        return wm.render()
+        rendered = wm.render()
+        return rendered.decode('utf-8')
     
     return pygmentize(text, filename, language);
 
