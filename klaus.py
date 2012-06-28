@@ -392,10 +392,11 @@ class TreeViewMixin(object):
         """ Gets the Git tree of the selected commit and path """
         root = self['path']
         tree = self['repo'].get_tree(self['commit'], root)
+        present_root = os.path.split(root)[0]
         if isinstance(tree, Blob):
-            root = os.path.split(root)[0]
-            tree = self['repo'].get_tree(self['commit'], root)
-        return tree, root
+            tree = self['repo'].get_tree(self['commit'], present_root)
+            
+        return tree, present_root
 
 @route('/:repo:/tree/:commit_id:/(?P<path>.*)', 'history')
 class TreeView(TreeViewMixin, BaseRepoView):
