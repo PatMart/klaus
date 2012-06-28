@@ -9,6 +9,7 @@ from future_builtins import map
 from functools import wraps
 
 from dulwich.objects import Commit, Blob
+from dulwich.diff_tree import RenameDetector
 
 from jinja2 import Environment, FileSystemLoader
 
@@ -36,7 +37,6 @@ try:
     KLAUS_VERSION = ' ' + open(os.path.join(KLAUS_ROOT, '.git/refs/heads/master')).read()[:7]
 except IOError:
     KLAUS_VERSION = ''
-
 
 def query_string_to_dict(query_string):
     """ Transforms a POST/GET string into a Python dict """
@@ -272,6 +272,23 @@ def subpaths(path):
         seen.append(part)
         yield part, '/'.join(seen)
 
+def last_commit_renamed_path(repo, history, path):
+    """ Check if the last commit of this history renames the given path
+        If so, return the new path, otherwise None """
+    if len(history) <= 1:
+        return None;
+    
+    newtree = history[0].tree
+    oldtree = history[1].tree
+    
+    rd = RenameDetector(repo)
+    result = "";
+    for change in rd.changes_with_renames(oldtree, newtree):
+      if change.type == 'rename' and change.old.path == path:
+        return change.new.path 
+
+    return None
+
 def get_repo(name):
     try:
         return Repo(name, app.repos[name])
@@ -414,6 +431,7 @@ class TreeView(TreeViewMixin, BaseRepoView):
         self['page'] = page
 
         if page:
+            self['last_commit_renamed_path'] = None
             self['history_length'] = 30
             self['skip'] = (self['page']-1) * 30 + 10
             if page > 7:
@@ -421,6 +439,7 @@ class TreeView(TreeViewMixin, BaseRepoView):
             else:
                 self['previous_pages'] = xrange(page)
         else:
+            self['last_commit_renamed_path'] = last_commit_renamed_path
             self['history_length'] = 10
             self['skip'] = 0
 

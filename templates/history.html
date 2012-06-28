@@ -46,6 +46,18 @@
       </span>
     </h2>
 
+    {% if last_commit_renamed_path %}
+      {% set renamed_path = last_commit_renamed_path(repo, history, path) %}
+      {% if renamed_path %}
+        <div>
+          Note: this file was renamed to 
+          <a href="{{ build_url('view_blob', path=renamed_path) }}">
+            {{ renamed_path }}
+          </a>
+        </div>
+      {% endif %}
+    {% endif %}
+
     {{ pagination() }}
 
     <ul>
