@@ -2,3 +2,5 @@ jinja2
 pygments
 dulwich
 argparse
+docutils
+mwparser
