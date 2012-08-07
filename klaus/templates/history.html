@@ -1,10 +1,17 @@
 {% extends 'base.html' %}
 
+{% block title %}
+  History of
+  {% if path %}{{ path }} - {% endif %}
+  {{ super() }}
+{% endblock %}
+
 {% block content %}
 
 {% include 'tree.inc.html' %}
 
-{% set history = repo.history(branch, path.strip('/'), history_length+1, skip) %}
+{# TODO: move logic into view #}
+{% set history = repo.history(branch, path, history_length+1, skip) %}
 {% set has_more_commits = history|length == history_length+1 %}
 
 {% macro pagination() %}
@@ -31,7 +38,7 @@
   <div class=history>
     <h2>
       {% if subpaths %}
-        History for
+        History of
         {% for name, subpath in subpaths %}
           {{ name }}
           {% if not loop.last %}
@@ -42,8 +49,11 @@
         <!-- GikiLog -->
       {% endif %}
       <span class="branch {{ branch }}">
-        @<a href="{{ build_url(commit_id=branch) }}">{{ branch }}</a>
+        @<a href="{{ url_for(view, repo=repo.name, commit_id=branch) }}">{{ branch }}</a>
       </span>
+      {% if USE_SMARTHTTP %}
+          <code>git clone {{ url_for('history', repo=repo.name, _external=True) }}</code>
+      {% endif %}
     </h2>
 
     {% if last_commit_renamed_path %}
@@ -51,7 +61,7 @@
       {% if renamed_path %}
         <div>
           Note: this file was renamed to 
-          <a href="{{ build_url('view_blob', path=renamed_path) }}">
+          <a href="{{ url_for('blob', path=renamed_path) }}">
             {{ renamed_path }}
           </a>
         </div>
@@ -64,15 +74,15 @@
     {% for commit in history %}
     {% if not loop.last or history|length < history_length %}
       <li>
-        <div class="{{ commit|commitclasses }}" onclick="document.location='{{ build_url('view_commit', commit_id=commit.id) }}'">
-          <h3>{{ commit.message|title }}</h3>
+        <div class="{{ commit|commitclasses }}" onclick="document.location='{{ url_for('commit', repo=repo.name, commit_id=commit.id) }}'">
+          <h3>{{ commit.message|commit_title }}</h3>
           <span class="line2 subtitle">
-            <span>{{ commit.author|u|shorten_author }}</span>
+            <span>{{ commit.author|force_unicode|extract_author_name }}</span>
             <span>{{ commit.commit_time|timesince }} ago</span>
           </span>
           <div class=line1>
-            {% autoescape off %}
-              <div>{{ commit.message|body|u|restructure }}</div>
+            {% autoescape false %}
+              <div>{{ commit.message|commit_body|force_unicode|restructure }}</div>
             {% endautoescape %}
           </div>
           <div class=tags>
@@ -81,8 +91,8 @@
                 {% if change.old.path != None %}
                   {% set tagpath = '' %}
                   {% for segment in change.old.path.split('/') %}
-                    {% set tagpath = tagpath + '/' + segment %}
-                    / <a href="{{ build_url('view_blob', path=tagpath) }}">{{ segment|noext }}</a>
+                    {% set tagpath = tagpath + segment + '/' %}
+                    / <a href="{{ url_for('blob', repo=repo.name, commit_id=commit_id, path=tagpath) }}">{{ segment|remove_extension }}</a>
                   {% endfor %}
                 {% endif %} 
               </div>
