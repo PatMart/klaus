@@ -1,12 +1,20 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python2.7
 # coding: utf-8
 
-import os
+import sys, os
 import argparse
 from dulwich.errors import NotGitRepository
 from dulwich.repo import Repo
-import klaus
 
+PROJECT_ROOT = os.path.join(os.path.dirname(__file__), os.pardir)
+
+sys.path.append(PROJECT_ROOT)
+
+try:
+    import klaus
+except ImportError:
+    sys.path.append(os.path.join(PROJECT_ROOT, 'klaus'))
+    import klaus
 
 def git_repository(path):
     if not os.path.exists(path):
