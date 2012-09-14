@@ -1,8 +1,14 @@
-klaus
-=====
-*a simple Git web viewer that Just Works™.*  (If it doesn't Just Work for you, please file a bug.)
+klaus: a simple Git web viewer that Just Works™.
+================================================
 
-Demo at http://klausdemo.lophus.org
+(If it doesn't Just Work for you, please file a bug.)
+
+Features
+--------
+* Super easy to set up -- no configuration required
+* Syntax highlighting
+* Git Smart HTTP support
+
 
 |img1|_ |img2|_ |img3|_
 
@@ -13,6 +19,15 @@ Demo at http://klausdemo.lophus.org
 .. _img1: https://github.com/jonashaag/klaus/raw/master/assets/commit-view.gif
 .. _img2: https://github.com/jonashaag/klaus/raw/master/assets/tree-view.gif
 .. _img3: https://github.com/jonashaag/klaus/raw/master/assets/blob-view.gif
+
+
+Who is using it?
+----------------
+Standard installations:
+   * http://klausdemo.lophus.org
+   * https://posativ.org/git/
+Forks/related projects:
+   * `GikiLog <http://arnout.engelen.eu>`_, blog/wiki hybrid based on klaus
 
 
 Installation
@@ -27,6 +42,10 @@ Usage
 
 Using the ``klaus`` script
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
+**NOTE:** This is intended for testing/low-traffic local installations *only*!
+The `klaus` script uses wsgiref_ internally which doesn't scale *at all*
+(in fact it's single-threaded and non-asynchronous).
+
 To run klaus using the default options::
 
    klaus [repo1 [repo2 ...]]
@@ -47,3 +66,6 @@ configuration being read from environment variables. Use it like this (uWSGI exa
          --env KLAUS_SITE_TITLE="Klaus Demo" \
          --env KLAUS_REPOS="/path/to/repo1 /path/to/repo2 ..." \
          ...
+
+
+.. _wsgiref: http://docs.python.org/library/wsgiref.html

@@ -21,19 +21,14 @@ class FancyRepo(dulwich.repo.Repo):
             return refs[0].commit_time
         return None
 
-    def get_branch_or_commit(self, id):
-        """
-        Returns a `(commit_object, is_branch)` tuple for the commit or branch
-        identified by `id`.
-        """
-        try:
-            return self[id], False
-        except KeyError:
-            return self.get_branch(id), True
+    def get_ref_or_commit(self, name_or_sha1):
+        for prefix in ['', 'refs/heads/', 'refs/tags/']:
+            try:
+                return self[prefix+name_or_sha1]
+            except KeyError:
+                pass
 
-    def get_branch(self, name):
-        """ Returns the commit object pointed to by the branch `name`. """
-        return self['refs/heads/'+name]
+        raise KeyError(name_or_sha1)
 
     def get_default_branch(self):
         """
@@ -41,31 +36,32 @@ class FancyRepo(dulwich.repo.Repo):
         """
         for candidate in ['master', 'trunk', 'default', 'gh-pages']:
             try:
-                self.get_branch(candidate)
+                self.get_ref_or_commit(candidate)
                 return candidate
             except KeyError:
                 pass
         return self.get_branch_names()[0]
 
-    def get_branch_names(self, exclude=()):
+    def get_sorted_ref_names(self, prefix, exclude=None):
+        refs = self.refs.as_dict(prefix)
+        if exclude:
+            refs.pop(prefix + exclude, None)
+
+        def get_commit_time(refname):
+            obj = self[refs[refname]]
+            if isinstance(obj, dulwich.objects.Tag):
+                return obj.tag_time
+            return obj.commit_time
+
+        return sorted(refs.iterkeys(), key=get_commit_time, reverse=True)
+
+    def get_branch_names(self, exclude=None):
         """ Returns a sorted list of branch names. """
-        branches = []
-        for ref in self.get_refs():
-            if ref.startswith('refs/heads/'):
-                name = ref[len('refs/heads/'):]
-                if name not in exclude:
-                    branches.append(name)
-        branches.sort()
-        return branches
+        return self.get_sorted_ref_names('refs/heads', exclude)
 
     def get_tag_names(self):
         """ Returns a sorted list of tag names. """
-        tags = []
-        for ref in self.get_refs():
-            if ref.startswith('refs/tags/'):
-                tags.append(ref[len('refs/tags/'):])
-        tags.sort()
-        return tags
+        return self.get_sorted_ref_names('refs/tags')
 
     def changes(self, commit):
         if len(commit.parents) > 0:
