@@ -61,7 +61,7 @@
       {% if renamed_path %}
         <div>
           Note: this file was renamed to 
-          <a href="{{ url_for('blob', path=renamed_path) }}">
+          <a href="{{ url_for('blob', repo=repo.name, commit_id='master', path=renamed_path) }}">
             {{ renamed_path }}
           </a>
         </div>
