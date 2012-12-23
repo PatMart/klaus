@@ -11,8 +11,11 @@
 <div class=full-commit>
   {# TODO code duplication in history.html #}
   <div class=commit>
+    <h2>{{ commit.message|commit_title }}</h2>
     <span class=line1>
+      {% autoescape false %}
       <span>{{ commit.message|force_unicode|restructure }}</span>
+      {% endautoescape %}
     </span>
     <span class=line2>
       <span>
