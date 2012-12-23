@@ -1,5 +1,3 @@
-import os
-import subprocess
 import jinja2
 import flask
 #import httpauth
@@ -8,12 +6,7 @@ from klaus import views, utils
 from klaus.repo import FancyRepo
 
 
-KLAUS_ROOT = os.path.dirname(__file__)
-
-try:
-    KLAUS_VERSION = utils.check_output(['git', 'log', '--format=%h', '-n', '1']).strip()
-except subprocess.CalledProcessError:
-    KLAUS_VERSION = '0.2'
+KLAUS_VERSION = utils.guess_git_revision() or '0.2'
 
 
 class Klaus(flask.Flask):
@@ -22,10 +15,10 @@ class Klaus(flask.Flask):
         'undefined': jinja2.StrictUndefined
     }
 
-    def __init__(self, repo_paths, sitename, use_smarthttp):
+    def __init__(self, repo_paths, site_name, use_smarthttp):
         self.repos = map(FancyRepo, repo_paths)
         self.repo_map = dict((repo.name, repo) for repo in self.repos)
-        self.sitename = sitename
+        self.site_name = site_name
         self.use_smarthttp = use_smarthttp
 
         flask.Flask.__init__(self, __name__)
@@ -52,7 +45,7 @@ class Klaus(flask.Flask):
 
         env.globals['KLAUS_VERSION'] = KLAUS_VERSION
         env.globals['USE_SMARTHTTP'] = self.use_smarthttp
-        env.globals['SITENAME'] = self.sitename
+        env.globals['SITE_NAME'] = self.site_name
 
         return env
 
@@ -71,14 +64,14 @@ class Klaus(flask.Flask):
             self.add_url_rule(rule, view_func=getattr(views, endpoint))
 
 
-def make_app(repos, sitename, use_smarthttp=False, htdigest_file=None):
+def make_app(repos, site_name, use_smarthttp=False, htdigest_file=None):
     """
     Returns a WSGI with all the features (smarthttp, authentication) already
     patched in.
     """
     app = Klaus(
         repos,
-        sitename,
+        site_name,
         use_smarthttp,
     )
     app.wsgi_app = utils.SubUri(app.wsgi_app)
